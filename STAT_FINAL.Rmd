@@ -1,8 +1,9 @@
 ---
 title: "R Notebook"
+author: "Group 5, Matthew Hines, Emmanuel Garzo, Dustin Beaver"
+date: "4/5/2020"
 output: html_notebook
 ---
-# Group 5, Matthew Hines, Emmanuel Garzo, Dustin Beaver
 
 # Guiding Question
 
@@ -31,6 +32,9 @@ What factors are common between all hall of fame MLB baseball players?
 # Home Runs per Year
 ggplot( data = Batting, aes(x = yearID)) + geom_histogram(binwidth = 5.9) + labs(title = "") 
 ```
+While analyzing the data, we noticed that having an excellent bating average gives you a better chance to be in the hall of fame.
+We saw some potential outliers because pitchers dont have a good batting average but they also could be in the hall of fame.
+
 # TWO Data Sources
 
 * Lahman's Baseball DataBase, will be sourced by CSV files

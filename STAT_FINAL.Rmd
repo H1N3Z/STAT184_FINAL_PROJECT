@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+# Group 5, Matthew Hines, Emmanuel Garzo, Dustin Beaver
+
+# Guiding Question
+
+What factors are common between all hall of fame MLB baseball players?
+  
+# Become Acquainted
+
+* Data.World
+* Authors of the data set are 
+    * Chris Dalzell
+    * Michael Friendly
+    * Dennis Murphys
+    * Martin Monkman
+    * Vanessa Foot & Justeena Zaki-Azat [vignettes]
+* Collected orginally in 1996, there is no given reason for collection.
+* There are 25 data sets included. the main focus will be on HallofFame, Pitching, Hitting, Fielding and Teams.
+* The varaibles that will be mainly used are PLayerID, which is unique to each player and allow us to join tables and track player statistics 
+
+# Explore Intuition Related to the Research Question 
+
+```{r}
+# Number of inducted versus not inducted per year
+ ggplot( data = HallOfFame, aes(x = yearID)) + geom_histogram(binwidth = 3.3) + facet_wrap(~inducted, ncol = 4) + labs(title = "") 
+```
+```{r}
+# Home Runs per Year
+ggplot( data = Batting, aes(x = yearID)) + geom_histogram(binwidth = 5.9) + labs(title = "") 
+```
+# TWO Data Sources
+
+* Lahman's Baseball DataBase, will be sourced by CSV files
+* RetroSheet Game Log Data Set, it's also a CSV 

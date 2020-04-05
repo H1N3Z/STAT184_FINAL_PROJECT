@@ -23,15 +23,18 @@ What factors are common between all hall of fame MLB baseball players?
 * The varaibles that will be mainly used are PLayerID, which is unique to each player and allow us to join tables and track player statistics 
 
 # Explore Intuition Related to the Research Question 
-
 ```{r}
 # Number of inducted versus not inducted per year
  ggplot( data = HallOfFame, aes(x = yearID)) + geom_histogram(binwidth = 3.3) + facet_wrap(~inducted, ncol = 4) + labs(title = "") 
 ```
+This plot shows the number of inducted players versus not inducted per year.
+
 ```{r}
 # Home Runs per Year
 ggplot( data = Batting, aes(x = yearID)) + geom_histogram(binwidth = 5.9) + labs(title = "") 
 ```
+This plot shows the number of home runs per year. 
+### Analyzing the Data
 While analyzing the data, we noticed that having an excellent bating average gives you a better chance to be in the hall of fame.
 We saw some potential outliers because pitchers dont have a good batting average but they also could be in the hall of fame.
 

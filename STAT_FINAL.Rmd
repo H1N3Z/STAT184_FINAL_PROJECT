@@ -34,8 +34,9 @@ This plot shows the number of inducted players versus not inducted per year.
 ggplot( data = Batting, aes(x = yearID)) + geom_histogram(binwidth = 5.9) + labs(title = "") 
 ```
 This plot shows the number of home runs per year. 
+
 ### Analyzing the Data
-While analyzing the data, we noticed that having an excellent bating average gives you a better chance to be in the hall of fame.
+While analyzing the data, we noticed that having an excellent batting average gives you a better chance to be in the hall of fame.
 We saw some potential outliers because pitchers dont have a good batting average but they also could be in the hall of fame.
 
 # TWO Data Sources

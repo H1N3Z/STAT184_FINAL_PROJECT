@@ -5,6 +5,7 @@ date: "4/5/2020"
 output: html_notebook
 ---
 
+
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?

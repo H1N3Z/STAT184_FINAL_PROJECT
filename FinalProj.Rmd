@@ -10,13 +10,6 @@ output: html_notebook
 What factors are common between all hall of fame MLB baseball players?
   
 
-```{r Loading the Data}
-library(readr)
-HallOfFame <- read_csv("core/HallOfFame.csv")
-
-
-```
-
 # Purpose
 
 *This document is required to indicate where various requirements can be found within your Final Project Report Rmd.  You must* **indicate line numbers as they appear in your final Rmd document** *accompanying each of the following required tasks. Points will be deducted if line numbers are missing or differ signficantly from the submitted Final Rmd document.*  
@@ -30,6 +23,16 @@ HallOfFame <- read_csv("core/HallOfFame.csv")
 *Description: (1) Analysis includes at least two different data sources. (2) Primary data source may NOT be loaded from an R package--though supporting data may. (3) Access to all data sources is contained within the analysis. (4) Imported data is inspected at beginning of analysis using one or more R functions: e.g., str, glimpse, head, tail, names, nrow, etc*
 
 (A) .Rmd Line numbers where at least two different data sources are imported:  
+```{r}
+library(readr)
+HallOfFame <- read_csv("core/HallOfFame.csv")
+```
+```{r}
+
+Salaries <- read_csv("core/Salaries.csv")
+```
+
+
 
 
 (B) .Rmd Line numbers for inspecting data intake:  

@@ -64,6 +64,7 @@ glimpse(Salaries)
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
+This table includes the player who were inducted into the hall of fame. 
 ```{r}
 InductedP<-
   HallOfFame%>%
@@ -71,8 +72,10 @@ InductedP<-
   select(playerID, yearID)
 
 InductedP
-```
 
+
+```
+This table selects only the player, the team they were on, and their salary. 
 ```{r}
 Money<-
   Salaries%>%
@@ -83,10 +86,12 @@ Money
 
 
 (B) .Rmd Line number(s) for a join operation: 
+This join allows us to see the salaries of the players in the hall of fame.
 ```{r}
 HallMoney<-
   InductedP%>%
-  inner_join(Money, by = c("playerID" = "playerID"))
+  inner_join(Money, by = c("playerID" = "playerID"))%>%
+  arrange(desc(playerID))
 
 HallMoney
 ```
@@ -138,6 +143,7 @@ AllStarHallOfFameTable
 
 
 (A) .Rmd Line number(s) for use of mulitple different geoms:  
+
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
 

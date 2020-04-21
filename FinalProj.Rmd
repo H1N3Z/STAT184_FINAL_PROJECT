@@ -69,19 +69,28 @@ glimpse(Salaries)
 ```{r}
 InductedP<-
   HallOfFame%>%
-  filter(inducted == "Y")
+  filter(inducted == "Y")%>%
+  select(playerID, yearID)
 
 InductedP
 ```
 
+```{r}
+Money<-
+  Salaries%>%
+  select(teamID, playerID, salary)
+
+Money
+```
 
 
 (B) .Rmd Line number(s) for a join operation: 
 ```{r}
-HPlayers <- 
-  HallofFame%>%
-  select(playerID,)
-  
+HallMoney<-
+  InductedP%>%
+  inner_join(Money, by = c("playerID" = "playerID"))
+
+HallMoney
 ```
 
 

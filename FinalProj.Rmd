@@ -8,6 +8,10 @@ output: html_notebook
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 38cd8b05bba0284e892c975e1ba43fa1cb59e6e3
 
 # Purpose
 
@@ -30,6 +34,7 @@ library(tidyverse)
 library(readr)
 HallOfFame <- read_csv("core/HallOfFame.csv")
 AllstarFull <- read_csv("core/AllstarFull.csv")
+Salaries <- read_csv("core/Salaries.csv")
 
 
 ```
@@ -57,7 +62,7 @@ AllStarHallOfFameJoin <-
 AllStarHallOfFameTable <-
   AllStarHallOfFameJoin %>%
   filter(inducted == "Y") %>%
-  group_by(playerID) %>%
+  group_by(playerID, inducted) %>%
   summarise(AppearanceCount = n()) %>%
   arrange(desc(AppearanceCount))
   

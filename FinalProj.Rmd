@@ -5,6 +5,15 @@ date: "4/16/2020"
 output: html_notebook
 ---
 
+
+```{r}
+# load necessary packages
+library(tidyverse)
+library(mosaic)
+library(DataComputing)
+library(ggplot2)
+```
+
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?
@@ -40,6 +49,19 @@ Salaries <- read_csv("core/Salaries.csv")
 ```
 
 (B) .Rmd Line numbers for inspecting data intake:  
+```{r}
+head(HallOfFame)
+```
+
+```{r}
+glimpse(HallOfFame)
+```
+```{r}
+head(Salaries)
+```
+```{r}
+glimpse(Salaries)
+```
 
 
 ### Data Wrangling (5 out of 8 required)
@@ -48,17 +70,34 @@ Salaries <- read_csv("core/Salaries.csv")
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
+```{r}
+InductedP<-
+  HallOfFame%>%
+  filter(inducted == "Y")
+
+InductedP
+```
+
 
 
 (B) .Rmd Line number(s) for a join operation: 
+```{r}
+HPlayers <- 
+  HallofFame%>%
+  select(playerID,)
+  
+```
+
 
 This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
 ```{r}
 
+# Join the AllstarFull table with the HallOfFame table
 AllStarHallOfFameJoin <-
   AllstarFull %>%
   inner_join(HallOfFame, by = c("playerID" = "playerID"))
 
+# Use data wrangling to alter the table to find the amount of times an inducted players played in All Star Games
 AllStarHallOfFameTable <-
   AllStarHallOfFameJoin %>%
   filter(inducted == "Y") %>%

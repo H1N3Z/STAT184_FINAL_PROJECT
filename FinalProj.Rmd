@@ -8,14 +8,6 @@ output: html_notebook
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?
-  
-
-```{r Loading the Data}
-library(readr)
-HallOfFame <- read_csv("core/HallOfFame.csv")
-
-
-```
 
 # Purpose
 
@@ -31,6 +23,16 @@ HallOfFame <- read_csv("core/HallOfFame.csv")
 
 (A) .Rmd Line numbers where at least two different data sources are imported:  
 
+```{r Loading the Data}
+
+library(DataComputing)
+library(tidyverse)
+library(readr)
+HallOfFame <- read_csv("core/HallOfFame.csv")
+AllstarFull <- read_csv("core/AllstarFull.csv")
+
+
+```
 
 (B) .Rmd Line numbers for inspecting data intake:  
 
@@ -44,6 +46,24 @@ HallOfFame <- read_csv("core/HallOfFame.csv")
 
 
 (B) .Rmd Line number(s) for a join operation: 
+
+This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
+```{r}
+
+AllStarHallOfFameJoin <-
+  AllstarFull %>%
+  inner_join(HallOfFame, by = c("playerID" = "playerID"))
+
+AllStarHallOfFameTable <-
+  AllStarHallOfFameJoin %>%
+  filter(inducted == "Y") %>%
+  group_by(playerID) %>%
+  summarise(AppearanceCount = n()) %>%
+  arrange(desc(AppearanceCount))
+  
+AllStarHallOfFameTable
+
+```
 
 
 (C) .Rmd Line number(s) for a spread or gather operation (or equivalent):

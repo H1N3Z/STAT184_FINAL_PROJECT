@@ -5,6 +5,15 @@ date: "4/16/2020"
 output: html_notebook
 ---
 
+
+```{r}
+# load necessary packages
+library(tidyverse)
+library(mosaic)
+library(DataComputing)
+library(ggplot2)
+```
+
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?
@@ -36,6 +45,19 @@ Salaries <- read_csv("core/Salaries.csv")
 
 
 (B) .Rmd Line numbers for inspecting data intake:  
+```{r}
+head(HallOfFame)
+```
+
+```{r}
+glimpse(HallOfFame)
+```
+```{r}
+head(Salaries)
+```
+```{r}
+glimpse(Salaries)
+```
 
 
 ### Data Wrangling (5 out of 8 required)
@@ -44,9 +66,24 @@ Salaries <- read_csv("core/Salaries.csv")
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
+```{r}
+InductedP<-
+  HallOfFame%>%
+  filter(inducted == "Y")
+
+InductedP
+```
+
 
 
 (B) .Rmd Line number(s) for a join operation: 
+```{r}
+HPlayers <- 
+  HallofFame%>%
+  select(playerID,)
+  
+```
+
 
 
 (C) .Rmd Line number(s) for a spread or gather operation (or equivalent):

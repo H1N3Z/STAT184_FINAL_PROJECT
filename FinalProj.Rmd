@@ -34,9 +34,11 @@ What factors are common between all hall of fame MLB baseball players?
 (A) .Rmd Line numbers where at least two different data sources are imported:  
 
 ```{r Loading the Data}
+
 HallOfFame <- read_csv("core/HallOfFame.csv")
 AllstarFull <- read_csv("core/AllstarFull.csv")
 Salaries <- read_csv("core/Salaries.csv")
+Batting <- read_csv("core/Batting.csv")
 
 ```
 
@@ -64,18 +66,16 @@ glimpse(Salaries)
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
-This table includes the player who were inducted into the hall of fame. 
 ```{r}
+
 InductedP<-
   HallOfFame%>%
   filter(inducted == "Y")%>%
   select(playerID, yearID)
 
 InductedP
-
-
 ```
-This table selects only the player, the team they were on, and their salary. 
+
 ```{r}
 Money<-
   Salaries%>%
@@ -86,12 +86,10 @@ Money
 
 
 (B) .Rmd Line number(s) for a join operation: 
-This join allows us to see the salaries of the players in the hall of fame.
 ```{r}
 HallMoney<-
   InductedP%>%
-  inner_join(Money, by = c("playerID" = "playerID"))%>%
-  arrange(desc(playerID))
+  inner_join(Money, by = c("playerID" = "playerID"))
 
 HallMoney
 ```
@@ -115,6 +113,49 @@ AllStarHallOfFameTable <-
   
 AllStarHallOfFameTable
 
+```
+
+
+```{r}
+#Batting stats
+
+BattingAndHallofFame <- 
+  Batting %>%
+  full_join(HallOfFame, by = c("playerID" = "playerID")) %>%
+  filter(inducted == "Y")
+
+#Only Take stats with players having more than 20 games
+BattingAndHallofFame <-
+  BattingAndHallofFame %>%
+    filter(G > 20) 
+
+HallOfFamerHomies <-
+  BattingAndHallofFame %>%
+    summarise(AvgHomeRunsPerPlayerHOF = mean(H))
+
+EverybodyBatting <-
+  Batting %>%
+    filter(G > 20) %>%
+    summarise(AvgHomeRunPerPlayerEverybody = mean(H))
+
+HallOfFamerHomies
+
+EverybodyBatting
+
+#Which league has greater HOF chance
+LeagueFromAmerican <-
+  BattingAndHallofFame %>%
+    filter(lgID == "AA") %>%
+    summarise(TotalFromAmerican = n())
+
+LeagueFromNational <-
+  BattingAndHallofFame %>%
+    filter(lgID == "NL") %>%
+    summarise(TotalFromNational = n())
+
+LeagueFromAmerican
+
+LeagueFromNational
 ```
 
 
@@ -143,7 +184,6 @@ AllStarHallOfFameTable
 
 
 (A) .Rmd Line number(s) for use of mulitple different geoms:  
-
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
 

@@ -92,7 +92,22 @@ HallMoney<-
   inner_join(Money, by = c("playerID" = "playerID"))
 
 HallMoney
+
+WholeLeague <-
+  Batting %>%
+  filter(G > 20)%>%
+  select(playerID, yearID)
+WholeLeague
+  
+WLeagueS<-
+  WholeLeague%>%
+  inner_join(Money, by =c("playerID" = "playerID"))
+WLeagueS
+
+
 ```
+
+
 
 
 This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
@@ -184,6 +199,12 @@ LeagueFromNational
 
 
 (A) .Rmd Line number(s) for use of mulitple different geoms:  
+```{r}
+HallMoney%>%
+ggplot(aes(x = playerID, y = salary))+
+  geom_point()
+```
+
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
 

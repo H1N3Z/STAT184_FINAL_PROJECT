@@ -17,7 +17,7 @@ library(ggplot2)
 # Guiding Question
 
 What factors are common between all hall of fame MLB baseball players?
-  
+
 
 # Purpose
 
@@ -32,17 +32,13 @@ What factors are common between all hall of fame MLB baseball players?
 *Description: (1) Analysis includes at least two different data sources. (2) Primary data source may NOT be loaded from an R package--though supporting data may. (3) Access to all data sources is contained within the analysis. (4) Imported data is inspected at beginning of analysis using one or more R functions: e.g., str, glimpse, head, tail, names, nrow, etc*
 
 (A) .Rmd Line numbers where at least two different data sources are imported:  
-```{r}
-library(readr)
+
+```{r Loading the Data}
 HallOfFame <- read_csv("core/HallOfFame.csv")
-```
-```{r}
-
+AllstarFull <- read_csv("core/AllstarFull.csv")
 Salaries <- read_csv("core/Salaries.csv")
+
 ```
-
-
-
 
 (B) .Rmd Line numbers for inspecting data intake:  
 ```{r}
@@ -52,9 +48,11 @@ head(HallOfFame)
 ```{r}
 glimpse(HallOfFame)
 ```
+
 ```{r}
 head(Salaries)
 ```
+
 ```{r}
 glimpse(Salaries)
 ```
@@ -93,6 +91,26 @@ HallMoney<-
 HallMoney
 ```
 
+
+This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
+```{r}
+
+# Join the AllstarFull table with the HallOfFame table
+AllStarHallOfFameJoin <-
+  AllstarFull %>%
+  inner_join(HallOfFame, by = c("playerID" = "playerID"))
+
+# Use data wrangling to alter the table to find the amount of times an inducted players played in All Star Games
+AllStarHallOfFameTable <-
+  AllStarHallOfFameJoin %>%
+  filter(inducted == "Y") %>%
+  group_by(playerID, inducted) %>%
+  summarise(AppearanceCount = n()) %>%
+  arrange(desc(AppearanceCount))
+  
+AllStarHallOfFameTable
+
+```
 
 
 (C) .Rmd Line number(s) for a spread or gather operation (or equivalent):

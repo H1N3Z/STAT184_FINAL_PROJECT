@@ -92,22 +92,7 @@ HallMoney<-
   inner_join(Money, by = c("playerID" = "playerID"))
 
 HallMoney
-
-WholeLeague <-
-  Batting %>%
-  filter(G > 20)%>%
-  select(playerID, yearID)
-WholeLeague
-  
-WLeagueS<-
-  WholeLeague%>%
-  inner_join(Money, by =c("playerID" = "playerID"))
-WLeagueS
-
-
 ```
-
-
 
 
 This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
@@ -198,10 +183,9 @@ LeagueFromNational
 *Description: Students need not use every function and method introduced in STAT 184, but clear demonstration of proficiency should include a range of useful of data visualizations that are (1) relevant to stated research question for the analysis, (2) include at least one effective display of many--at least 3--variables, and (3) include 3 of the following 5 visualization techniques learned in STAT 184: (+) use of multiple geoms such as points, density, lines, segments, boxplots, bar charts, histograms, etc (+) use of multiple aesthetics--not necessarily all in the same graph--such as color, size, shape, x/y position, facets, etc (+) layered graphics such as points and accompanying smoother, points and accompanying boxplots, overlaid density distributions, etc (+) leaflet maps (+) decision tree and/or dendogram displaying machine learning model results*
 
 
-
-
 (A) .Rmd Line number(s) for use of mulitple different geoms:
 
+The data for this graph counts the amount of times players who were inducted into the Hall Of Fame played in the All Star Game. With this, we made a bar chart of the amount of players who played total amounts. Example: only 1 player played 26 All Star Games and was inducted into the Hall Of Fame, so the bar graph indicates 1 at the x-pposition of 26. There is an included average bar to show the average amount of All Star apperances there have been by Hall Of Fame players.
 ```{r}
 
 AllStarHallOfFameGraphData <-
@@ -217,13 +201,6 @@ AllStarHallOfFameGraph <-
 
 AllStarHallOfFameGraph
 
-
-```
-
-```{r}
-HallMoney%>%
-ggplot(aes(x = playerID, y = salary))+
-  geom_point()
 ```
 
 

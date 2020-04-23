@@ -58,6 +58,12 @@ head(Salaries)
 ```{r}
 glimpse(Salaries)
 ```
+```{r}
+head(Batting)
+```
+```{r}
+
+```
 
 
 ### Data Wrangling (5 out of 8 required)
@@ -105,9 +111,16 @@ WholeLeague <-
   select(playerID, yearID)
 WholeLeague
 
+OnlyL<-
+  WholeLeague%>%
+  select(playerID, yearID)%>%
+  inner_join(HallOfFame, by =c("playerID" = "playerID"))%>%
+  filter(inducted == "N")
+OnlyL
+
 #All salaries for players in the league  
 WLeagueS<-
-  WholeLeague%>%
+  OnlyL%>%
   inner_join(Money, by =c("playerID" = "playerID"))
 WLeagueS
 
@@ -146,6 +159,76 @@ AllStarHallOfFameTable
 
 
 ```{r}
+
+AvgHS%>%
+ggplot(aes(x = playerID, y = Salary, color = Salary))+
+   geom_point()+
+   geom_smooth()+
+  labs(x = "Player", y = "Salary (millions)")
+
+```
+
+
+```{r}
+
+AvgS%>%
+ggplot(aes(x = playerID, y = Salary, color = Salary))+
+   geom_point()+
+   geom_smooth()+
+  labs(x = "Player", y = "Salary (millions)")
+
+```
+
+
+```{r}
+
+HallOfFamePlayers <-
+  HallOfFame %>%
+  filter(inducted == "Y") %>%
+  select(playerID)
+
+
+HallOfFameBatting <-
+  Batting %>%
+  inner_join(HallOfFamePlayers, by = c("playerID" = "playerID"))
+
+
+HallOfFameBatAvg <-
+  HallOfFameBatting %>%
+  filter(G > 20) %>%
+  select(playerID, AB)
+
+
+HallOfFameOver500 <-
+  HallOfFameBatAvg %>%
+  extractMatches("^([5]{1}[0-9]{2}).*$", AB) %>%
+  filter( ! is.na(match1))
+HallOfFameOver500
+
+```
+
+
+In the graph above, you can notice that the avg homeruns per year of Hall of Famers is lower than the rest of the league. This would indicate that Homeruns are not a crucial statistic in the game of baseball to get you into the Hall of Fame.
+```{r}
+
+AllStarHallOfFameGraphData <-
+  AllStarHallOfFameTable %>%
+  group_by(AppearanceCount) %>%
+  summarise(total = n())
+
+AllStarHallOfFameGraph <-
+  AllStarHallOfFameGraphData %>%
+  ggplot(aes(x = AppearanceCount, y = total)) +
+  geom_bar(stat = "identity", color = "black", fill = "red") +
+  geom_hline(aes(yintercept = mean(total)), color = "blue")
+
+AllStarHallOfFameGraph
+
+```
+
+
+
+```{r}
 #Batting stats
 
 BattingAndHallofFame <- 
@@ -160,32 +243,67 @@ BattingAndHallofFame <-
 
 HallOfFamerHomies <-
   BattingAndHallofFame %>%
-    summarise(AvgHomeRunsPerPlayerHOF = mean(H))
+    select(yearID.x, H) %>%
+    group_by(yearID.x) %>%
+    summarise(AvgHsHOF = mean(H)) %>%
+    rename(yearID = yearID.x)
 
 EverybodyBatting <-
   Batting %>%
     filter(G > 20) %>%
     summarise(AvgHomeRunPerPlayerEverybody = mean(H))
 
-HallOfFamerHomies
-
-EverybodyBatting
+GraphHomeRuns <-
+  Batting %>%
+    select(yearID, G, H) %>%
+    group_by(yearID) %>%
+    filter(G > 20) %>%
+    summarise(AvgHsEvery = mean(H))
 
 #Which league has greater HOF chance
 LeagueFromAmerican <-
   BattingAndHallofFame %>%
+    select(yearID.x, lgID) %>%
+    group_by(yearID.x) %>%
     filter(lgID == "AA") %>%
-    summarise(TotalFromAmerican = n())
+    summarise(American = n()) %>%
+    rename(yearID = yearID.x)
 
 LeagueFromNational <-
   BattingAndHallofFame %>%
+    select(yearID.x, lgID) %>%
+    group_by(yearID.x) %>%
     filter(lgID == "NL") %>%
-    summarise(TotalFromNational = n())
+    summarise(National = n()) %>%
+    rename(yearID = yearID.x)
 
-LeagueFromAmerican
+LeagueGraph <-
+  LeagueFromAmerican %>%
+    full_join(LeagueFromNational, by = c("yearID" = "yearID"))
 
-LeagueFromNational
+ 
+LeagueGraph1 <-
+   LeagueGraph %>%
+      gather(key = kind, value = Total, American, National)
+
+LeagueGraph1
+
+Graph1 <-
+  GraphHomeRuns %>%
+    full_join(HallOfFamerHomies, by = c("yearID" = "yearID"))
+
+Graph1.1 <- 
+  Graph1 %>%
+    gather(key = kind, value = Avg, AvgHsHOF, AvgHsEvery)
+
+
+ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+geom_bar(stat='identity',position='stack', width=.9)+ggtitle("HOF Vs Everybody Homeruns")
+  
+
+  
+
 ```
+
 
 
 (C) .Rmd Line number(s) for a spread or gather operation (or equivalent):
@@ -215,64 +333,6 @@ LeagueFromNational
 
 
 (A) .Rmd Line number(s) for use of mulitple different geoms:
-
-```{r}
-
-AllStarHallOfFameGraphData <-
-  AllStarHallOfFameTable %>%
-  group_by(AppearanceCount) %>%
-  summarise(total = n())
-
-AllStarHallOfFameGraph <-
-  AllStarHallOfFameGraphData %>%
-  ggplot(aes(x = AppearanceCount, y = total)) +
-  geom_bar(stat = "identity", color = "black", fill = "red") +
-  geom_hline(aes(yintercept = mean(total)), color = "blue")
-
-AllStarHallOfFameGraph
-
-
-```
-
-```{r}
-AvgHS%>%
-ggplot(aes(x = playerID, y = Salary))+
-  geom_point()
-```
-```{r}
-AvgS%>%
-ggplot(aes(x = playerID, y = Salary))+
-  geom_point()
-```
-
-```{r}
-
-HallOfFamePlayers <-
-  HallOfFame %>%
-  filter(inducted == "Y") %>%
-  select(playerID)
-
-
-HallOfFameBatting <-
-  Batting %>%
-  inner_join(HallOfFamePlayers, by = c("playerID" = "playerID"))
-
-
-HallOfFameBatAvg <-
-  HallOfFameBatting %>%
-  filter(G > 20) %>%
-  select(playerID, AB)
-
-
-HallOfFameOver500 <-
-  HallOfFameBatAvg %>%
-  extractMatches("^([5]{1}[0-9]{2}).*$", AB) %>%
-  filter( ! is.na(match1))
-HallOfFameOver500
-    
-```
-
-
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
 

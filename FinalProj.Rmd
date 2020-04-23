@@ -196,7 +196,7 @@ AllStarHallOfFameGraphData <-
 AllStarHallOfFameGraph <-
   AllStarHallOfFameGraphData %>%
   ggplot(aes(x = AppearanceCount, y = total)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", color = "black", fill = "red") +
   geom_hline(aes(yintercept = mean(total)), color = "blue")
 
 AllStarHallOfFameGraph

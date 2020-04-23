@@ -173,32 +173,73 @@ BattingAndHallofFame <-
 
 HallOfFamerHomies <-
   BattingAndHallofFame %>%
-    summarise(AvgHomeRunsPerPlayerHOF = mean(H))
+    select(yearID.x, H) %>%
+    group_by(yearID.x) %>%
+    summarise(AvgHsHOF = mean(H)) %>%
+    rename(yearID = yearID.x)
 
 EverybodyBatting <-
   Batting %>%
     filter(G > 20) %>%
     summarise(AvgHomeRunPerPlayerEverybody = mean(H))
 
-HallOfFamerHomies
-
-EverybodyBatting
+GraphHomeRuns <-
+  Batting %>%
+    select(yearID, G, H) %>%
+    group_by(yearID) %>%
+    filter(G > 20) %>%
+    summarise(AvgHsEvery = mean(H))
 
 #Which league has greater HOF chance
 LeagueFromAmerican <-
   BattingAndHallofFame %>%
+    select(yearID.x, lgID) %>%
+    group_by(yearID.x) %>%
     filter(lgID == "AA") %>%
-    summarise(TotalFromAmerican = n())
+    summarise(American = n()) %>%
+    rename(yearID = yearID.x)
 
 LeagueFromNational <-
   BattingAndHallofFame %>%
+    select(yearID.x, lgID) %>%
+    group_by(yearID.x) %>%
     filter(lgID == "NL") %>%
-    summarise(TotalFromNational = n())
+    summarise(National = n()) %>%
+    rename(yearID = yearID.x)
 
-LeagueFromAmerican
+LeagueGraph <-
+  LeagueFromAmerican %>%
+    full_join(LeagueFromNational, by = c("yearID" = "yearID"))
 
-LeagueFromNational
+ 
+LeagueGraph1 <-
+   LeagueGraph %>%
+      gather(key = kind, value = Total, American, National)
+
+LeagueGraph1
+
+Graph1 <-
+  GraphHomeRuns %>%
+    full_join(HallOfFamerHomies, by = c("yearID" = "yearID"))
+
+Graph1.1 <- 
+  Graph1 %>%
+    gather(key = kind, value = Avg, AvgHsHOF, AvgHsEvery)
+
+
+ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+geom_bar(stat='identity',position='stack', width=.9)+ggtitle("HOF Vs Everybody Homeruns")
+  
+
+  
+
 ```
+```
+In the graph above, you can notice that the avg homeruns per year of Hall of Famers is lower than the rest of the league.
+This would indicate that Homeruns are not a crucial statistic in the game of baseball to get you into the Hall of Fame.
+
+
+
+
 
 
 (C) .Rmd Line number(s) for a spread or gather operation (or equivalent):

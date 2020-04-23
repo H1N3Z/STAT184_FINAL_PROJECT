@@ -179,13 +179,13 @@ ggplot(aes(x = playerID, y = Salary, color = Salary))+
 
 ```
 
-
+The table displayed below uses regular expressions to display the inducted Hall of Fame players who had a batting average of 500 or more in at least 20 games and years that made the achievement. This helps show how good the inducted players are at batting and the years that they did it in.
 ```{r}
 
 HallOfFamePlayers <-
   HallOfFame %>%
   filter(inducted == "Y") %>%
-  select(playerID)
+  select(playerID, yearID)
 
 
 HallOfFameBatting <-
@@ -196,12 +196,12 @@ HallOfFameBatting <-
 HallOfFameBatAvg <-
   HallOfFameBatting %>%
   filter(G > 20) %>%
-  select(playerID, AB)
+  select(playerID, yearID.x, AB)
 
 
 HallOfFameOver500 <-
   HallOfFameBatAvg %>%
-  extractMatches("^([5]{1}[0-9]{2}).*$", AB) %>%
+  extractMatches("^([5-9]{1}[0-9]{2}).*$", AB) %>%
   filter( ! is.na(match1))
 HallOfFameOver500
 

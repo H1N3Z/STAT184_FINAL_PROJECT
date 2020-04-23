@@ -58,6 +58,12 @@ head(Salaries)
 ```{r}
 glimpse(Salaries)
 ```
+```{r}
+head(Batting)
+```
+```{r}
+
+```
 
 
 ### Data Wrangling (5 out of 8 required)
@@ -105,9 +111,16 @@ WholeLeague <-
   select(playerID, yearID)
 WholeLeague
 
+OnlyL<-
+  WholeLeague%>%
+  select(playerID, yearID)%>%
+  inner_join(HallOfFame, by =c("playerID" = "playerID"))%>%
+  filter(inducted == "N")
+OnlyL
+
 #All salaries for players in the league  
 WLeagueS<-
-  WholeLeague%>%
+  OnlyL%>%
   inner_join(Money, by =c("playerID" = "playerID"))
 WLeagueS
 
@@ -236,13 +249,17 @@ AllStarHallOfFameGraph
 
 ```{r}
 AvgHS%>%
-ggplot(aes(x = playerID, y = Salary))+
-  geom_point()
+ggplot(aes(x = playerID, y = Salary, color = Salary))+
+   geom_point()+
+   geom_smooth()+
+  labs(x = "Player", y = "Salary (millions)")
 ```
 ```{r}
 AvgS%>%
-ggplot(aes(x = playerID, y = Salary))+
-  geom_point()
+ggplot(aes(x = playerID, y = Salary, color = Salary))+
+   geom_point()+
+   geom_smooth()+
+  labs(x = "Player", y = "Salary (millions)")
 ```
 
 

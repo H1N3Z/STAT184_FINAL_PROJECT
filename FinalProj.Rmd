@@ -245,6 +245,34 @@ ggplot(aes(x = playerID, y = Salary))+
   geom_point()
 ```
 
+```{r}
+
+HallOfFamePlayers <-
+  HallOfFame %>%
+  filter(inducted == "Y") %>%
+  select(playerID)
+
+
+HallOfFameBatting <-
+  Batting %>%
+  inner_join(HallOfFamePlayers, by = c("playerID" = "playerID"))
+
+
+HallOfFameBatAvg <-
+  HallOfFameBatting %>%
+  filter(G > 20) %>%
+  select(playerID, AB)
+
+
+HallOfFameOver500 <-
+  HallOfFameBatAvg %>%
+  extractMatches("^([5]{1}[0-9]{2}).*$", AB) %>%
+  filter( ! is.na(match1))
+HallOfFameOver500
+    
+```
+
+
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
 

@@ -58,6 +58,7 @@ head(Salaries)
 ```{r}
 glimpse(Salaries)
 ```
+
 ```{r}
 head(Batting)
 ```
@@ -72,6 +73,8 @@ head(Batting)
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
+
+This will filter will allow us to see the player and the year that they were inducted into the hall of fame. 
 ```{r}
 
 InductedP<-
@@ -79,56 +82,147 @@ InductedP<-
   filter(inducted == "Y")%>%
   select(playerID, yearID)
 
+
 InductedP
 ```
+Using the Inducted table we created this ExperienceHP separate hall of fame player that played more than 200 games. In our analysis, we chose to say that if a player played more than 200 games, that these player we Experienced. To compare the experienced players with the other player in the hall of fame, we made the player that played less than 200 games inexperenced. 
+```{r}
+ExperiencedHP<-
+  InductedP%>%
+  left_join(Batting, by = c("playerID" = "playerID"))%>%
+  group_by(playerID)%>%
+  summarise(Total_Games = sum(G))%>%
+  filter(Total_Games >= 2000)%>%
+  mutate(Total_Games = "Experienced")
+ExperiencedHP
 
+InexperiencedHP<-
+  InductedP%>%
+  left_join(Batting, by = c("playerID" = "playerID"))%>%
+  group_by(playerID)%>%
+  summarise(Total_Games = sum(G))%>%
+  filter(Total_Games <= 2000)%>%
+  mutate(Total_Games = "Inexperienced")
+  
+InexperiencedHP
+```
+
+This join will us to see the year that the player was inducted into the hall of fame for further analysis. 
+```{r}
+EXYear<-
+  ExperiencedHP%>%
+  left_join(InductedP, by =c("playerID" = "playerID"))
+EXYear
+
+InexYear<-
+  InexperiencedHP%>%
+  left_join(InductedP, by =c("playerID" = "playerID"))
+InexYear
+```
+
+
+We summarised the sum of each player's salary to use to match their experience levels. 
 ```{r}
 Money<-
   Salaries%>%
-  select(teamID, playerID, salary, yearID)
+  select(playerID, salary)%>%
+  group_by(playerID)%>%
+  summarise(Salary = sum(salary))
 
 Money
 ```
-
-
-(B) .Rmd Line number(s) for a join operation: 
+These joins matched the playerID for us to make a ggplot about the data. 
 ```{r}
 HallMoney<-
-  InductedP%>%
-  inner_join(Money, by = c("playerID" = "playerID"))
+  EXYear%>%
+  left_join(Money, by = c("playerID" = "playerID"))
 HallMoney
-#
-AvgHS<- 
-  HallMoney%>%
-  group_by(playerID)%>%
-  mutate(Salary = mean(salary))
-AvgHS
 
+
+HallMoneyC<-
+  InexYear%>%
+  left_join(Money, by = c("playerID" = "playerID"))
+HallMoneyC
+
+```
+This join combined the Inexperienced players as well as the experienced players to be able to plot. 
+```{r}
+AllHall<-
+  HallMoney%>%
+  full_join(HallMoneyC, by = c("playerID", "Total_Games", "yearID", "Salary"))
+AllHall
+```
+```{r}
 #Players in the whole league
 WholeLeague <-
   Batting %>%
   filter(G > 20)%>%
-  select(playerID, yearID)
+  group_by(playerID)%>%
+  summarise(Total_Games = sum(G))
 WholeLeague
 
-OnlyL<-
+NotInd<-
   WholeLeague%>%
-  select(playerID, yearID)%>%
   inner_join(HallOfFame, by =c("playerID" = "playerID"))%>%
-  filter(inducted == "N")
-OnlyL
+  filter(inducted == "N")%>%
+  group_by(playerID)%>%
+  summarise(Total_Games = sum(Total_Games))
+NotInd
+
+NewB<- 
+  NotInd%>%
+  filter(Total_Games <= 2000)%>%
+  mutate(Total_Games = "Not Experienced")
+NewB
+
+NotNewB<-
+  NotInd%>%
+  filter(Total_Games >= 2000)%>%
+  mutate(Total_Games = "Experienced")
+NotNewB
+
+
+```
+```{r}
+AllLeague<-
+  NewB%>%
+  full_join(NotNewB, by = c("playerID", "Total_Games"))
+AllLeague
+  
+
+AllLM<- 
+  AllLeague%>%
+  left_join(Money, by = c("playerID" = "playerID"))
+AllLM
+
+TotLeague<-
+  AllLM%>%
+  left_join(HallOfFame, by = c("playerID" = "playerID"))%>%
+  filter(inducted == "N")%>%
+  select(playerID, yearID, Total_Games, Salary)
+TotLeague
+
+```
+
+(B) .Rmd Line number(s) for a join operation: 
+```{r}
+
+#filtering Batting
+WL<-
+  Batting%>%
+  select(playerID, yearID)
+WL
 
 #All salaries for players in the league  
 WLeagueS<-
-  OnlyL%>%
+  WL%>%
   inner_join(Money, by =c("playerID" = "playerID"))
 WLeagueS
 
 #Average League salary for each player
 AvgS<-
   WLeagueS%>%
-  group_by(playerID)%>%
-  summarise(Salary = mean(salary))
+  group_by(playerID)
 AvgS
 
 
@@ -157,25 +251,25 @@ AllStarHallOfFameTable
 
 ```
 
-
+This ggplot shows the correlation between experienced and inexperienced hall of fame playeres. We have filled their color by their experience. The plot on the graph is correlated to the year that they were inducted. 
 ```{r}
 
-AvgHS%>%
-ggplot(aes(x = yearID.y, y = Salary, color = Salary))+
+AllHall%>%
+ggplot(aes(x = yearID, y = Salary, color = Total_Games))+
    geom_point()+
    geom_smooth()+
-  labs(x = "Year", y = "Salary (millions)")
+  labs(x = "Year Inducted", y = "Total Salary", Total_Games = "Experience Level")
 
 ```
 
-
+This plot displays the salaries of all the players in the league that were not inducted into the hall of fame. We can see that in this plot the players with more experience are recieving more money. To compare with the hall of fame players, we can see that some players that are not inducted to the league are recievving more money. However, it our dataset some salaries were missig which can have player with higher salaries in the hall of fame and just in the league. 
 ```{r}
 
-AvgS%>%
-ggplot(aes(x = playerID, y = Salary, color = Salary))+
+TotLeague%>%
+ggplot(aes(x = yearID, y = Salary, color = Total_Games))+
    geom_point()+
    geom_smooth()+
-  labs(x = "Player", y = "Salary (millions)")
+  labs(x = "Year", y = "Total Salary (Millions)")
 
 ```
 
@@ -334,38 +428,7 @@ ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+geom_bar(stat='identity',po
 
 (A) .Rmd Line number(s) for use of mulitple different geoms:
 
-<<<<<<< HEAD
-```{r}
 
-AllStarHallOfFameGraphData <-
-  AllStarHallOfFameTable %>%
-  group_by(AppearanceCount) %>%
-  summarise(total = n())
-
-AllStarHallOfFameGraph <-
-  AllStarHallOfFameGraphData %>%
-  ggplot(aes(x = AppearanceCount, y = total)) +
-  geom_bar(stat = "identity", color = "black", fill = "red") +
-  geom_hline(aes(yintercept = mean(total)), color = "blue")
-
-AllStarHallOfFameGraph
-
-```
-
-```{r}
-AvgHS%>%
-ggplot(aes(x = playerID, y = Salary, color = Salary))+
-   geom_point()+
-   geom_smooth()+
-  labs(x = "Player", y = "Salary (millions)")
-```
-```{r}
-AvgS%>%
-ggplot(aes(x = playerID, y = Salary, color = Salary))+
-   geom_point()+
-   geom_smooth()+
-  labs(x = "Player", y = "Salary (millions)")
-```
 
 
 =======

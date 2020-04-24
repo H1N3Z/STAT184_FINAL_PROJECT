@@ -85,7 +85,7 @@ InductedP
 ```{r}
 Money<-
   Salaries%>%
-  select(teamID, playerID, salary)
+  select(teamID, playerID, salary, yearID)
 
 Money
 ```
@@ -97,11 +97,11 @@ HallMoney<-
   InductedP%>%
   inner_join(Money, by = c("playerID" = "playerID"))
 HallMoney
-
+#
 AvgHS<- 
   HallMoney%>%
   group_by(playerID)%>%
-  summarise(Salary = mean(salary))
+  mutate(Salary = mean(salary))
 AvgHS
 
 #Players in the whole league
@@ -161,10 +161,10 @@ AllStarHallOfFameTable
 ```{r}
 
 AvgHS%>%
-ggplot(aes(x = playerID, y = Salary, color = Salary))+
+ggplot(aes(x = yearID.y, y = Salary, color = Salary))+
    geom_point()+
    geom_smooth()+
-  labs(x = "Player", y = "Salary (millions)")
+  labs(x = "Year", y = "Salary (millions)")
 
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: "R Notebook"
-author: "Group 5, Matthew Hines, Emmanuel Garzo, Dustin Beaver"
+author: "Group 5: Matthew Hines, Emmanuel Garzo, Dustin Beaver"
 date: "4/16/2020"
 output: html_notebook
 ---
@@ -14,24 +14,14 @@ library(DataComputing)
 library(ggplot2)
 ```
 
-# Guiding Question
+### Guiding Question
 
-What factors are common between all hall of fame MLB baseball players?
-
-
-# Purpose
-
-*This document is required to indicate where various requirements can be found within your Final Project Report Rmd.  You must* **indicate line numbers as they appear in your final Rmd document** *accompanying each of the following required tasks. Points will be deducted if line numbers are missing or differ signficantly from the submitted Final Rmd document.*  
-
-
-# Final Project Requirements
+What factors are common between all hall of fame MLB baseball players? Hall of Fame baseball players are obviously a step ahead of everybody else. They are considered great players and have a knack for understanding the game. Becoming a Hall of Fame baseball player is no easy feat. They have advanced stats that show how great the players truly are; but what enables a baseball player to be inducted into the Hall of Fame? We are going to dive deep and see the comparisons between inducted Hall of Fame players and other players who tried to live up to the legendary names.
+Some challenges we faced with some of the data sets was that some of the data sets had incompleteness in the data. For some of the players from the older years, some statistics were not tracked because of the inconsistency of recording data during these years. Some stats are currently tracked through computers which were not accessible at some years shown in the data sets. Another problem we faced was the lack of explanation of some data. Some players were repeated twice for certain years in categories that should not show repetition. This throws the numbers we tracked off by a few, but did not skew the results too much, luckily.
+One finding that we found to be significant was the amount of times that inducted players had a batting average over .5 (500). This is no easy feat as it means that at least half of the players hits got them on a base through the whole year. The most shocking part about this data is how high the numbers got to be. We made sure that players played in at least 20 games, and players were still hitting over .65 (650). This shows how excellent these players were at the time and through certain years.
 
 
 ### Data Access
-
-*Description: (1) Analysis includes at least two different data sources. (2) Primary data source may NOT be loaded from an R package--though supporting data may. (3) Access to all data sources is contained within the analysis. (4) Imported data is inspected at beginning of analysis using one or more R functions: e.g., str, glimpse, head, tail, names, nrow, etc*
-
-(A) .Rmd Line numbers where at least two different data sources are imported:  
 
 ```{r Loading the Data}
 
@@ -42,37 +32,33 @@ Batting <- read_csv("core/Batting.csv")
 
 ```
 
-(B) .Rmd Line numbers for inspecting data intake:  
+ 
 ```{r}
 head(HallOfFame)
 ```
+
 
 ```{r}
 glimpse(HallOfFame)
 ```
 
+
 ```{r}
 head(Salaries)
 ```
+
 
 ```{r}
 glimpse(Salaries)
 ```
 
+
 ```{r}
 head(Batting)
 ```
-```{r}
-
-```
 
 
-### Data Wrangling (5 out of 8 required)
-
-*Description: Students need not use every function and method introduced in STAT 184, but clear demonstration of proficiency should include proper use of 5 out of the following 8 topics from class: (+) various data verbs for general data wrangling like filter, mutate, summarise, arrange, group_by, etc. (+) joins for multiple data tables. (+) spread & gather to stack/unstack variables (+) regular expressions (+) reduction and/or transformation functions like mean, sum, max, min, n(), rank, pmin, etc. (+) user-defined functions (+) loops and control flow (+) machine learning*
-
-
-(A) .Rmd Line number(s) for general data wrangling: 
+### Data Wrangling
 
 This will filter will allow us to see the player and the year that they were inducted into the hall of fame. 
 ```{r}
@@ -85,6 +71,8 @@ InductedP<-
 
 InductedP
 ```
+
+
 Using the Inducted table we created this ExperienceHP separate hall of fame player that played more than 200 games. In our analysis, we chose to say that if a player played more than 200 games, that these player we Experienced. To compare the experienced players with the other player in the hall of fame, we made the player that played less than 200 games inexperenced. 
 ```{r}
 ExperiencedHP<-
@@ -106,6 +94,7 @@ InexperiencedHP<-
   
 InexperiencedHP
 ```
+
 
 This join will us to see the year that the player was inducted into the hall of fame for further analysis. 
 ```{r}
@@ -131,6 +120,8 @@ Money<-
 
 Money
 ```
+
+
 These joins matched the playerID for us to make a ggplot about the data. 
 ```{r}
 HallMoney<-
@@ -145,6 +136,8 @@ HallMoneyC<-
 HallMoneyC
 
 ```
+
+
 This join combined the Inexperienced players as well as the experienced players to be able to plot. 
 ```{r}
 AllHall<-
@@ -152,14 +145,17 @@ AllHall<-
   full_join(HallMoneyC, by = c("playerID", "Total_Games", "yearID", "Salary"))
 AllHall
 ```
+
+
+We took the whole league and seperated players who were not inducted into the Hall of Fame. Then, we took those players and seperated them into 2 groups. One group was the experienced group who have players who player more than 2000 games. The other group is not experienced players who played less than 2000 games.
 ```{r}
+
 #Players in the whole league
 WholeLeague <-
   Batting %>%
   filter(G > 20)%>%
   group_by(playerID)%>%
   summarise(Total_Games = sum(G))
-WholeLeague
 
 NotInd<-
   WholeLeague%>%
@@ -167,23 +163,23 @@ NotInd<-
   filter(inducted == "N")%>%
   group_by(playerID)%>%
   summarise(Total_Games = sum(Total_Games))
-NotInd
 
 NewB<- 
   NotInd%>%
   filter(Total_Games <= 2000)%>%
   mutate(Total_Games = "Not Experienced")
-NewB
 
 NotNewB<-
   NotInd%>%
   filter(Total_Games >= 2000)%>%
   mutate(Total_Games = "Experienced")
-NotNewB
-
 
 ```
+
+
+This data wrangling shows the salary for the whole league, but it is split up into the experienced and not experienced players.
 ```{r}
+
 AllLeague<-
   NewB%>%
   full_join(NotNewB, by = c("playerID", "Total_Games"))
@@ -204,7 +200,8 @@ TotLeague
 
 ```
 
-(B) .Rmd Line number(s) for a join operation: 
+
+
 ```{r}
 
 #filtering Batting
@@ -229,8 +226,6 @@ AvgS
 ```
 
 
-
-
 This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
 ```{r}
 
@@ -251,6 +246,7 @@ AllStarHallOfFameTable
 
 ```
 
+
 This ggplot shows the correlation between experienced and inexperienced hall of fame playeres. We have filled their color by their experience. The plot on the graph is correlated to the year that they were inducted. 
 ```{r}
 
@@ -262,6 +258,7 @@ ggplot(aes(x = yearID, y = Salary, color = Total_Games))+
 
 ```
 
+
 This plot displays the salaries of all the players in the league that were not inducted into the hall of fame. We can see that in this plot the players with more experience are recieving more money. To compare with the hall of fame players, we can see that some players that are not inducted to the league are recievving more money. However, it our dataset some salaries were missig which can have player with higher salaries in the hall of fame and just in the league. 
 ```{r}
 
@@ -272,6 +269,7 @@ ggplot(aes(x = yearID, y = Salary, color = Total_Games))+
   labs(x = "Year", y = "Total Salary (Millions)")
 
 ```
+
 
 The table displayed below uses regular expressions to display the inducted Hall of Fame players who had a batting average of 500 or more in at least 20 games and years that made the achievement. This helps show how good the inducted players are at batting and the years that they did it in.
 ```{r}
@@ -321,7 +319,7 @@ AllStarHallOfFameGraph
 ```
 
 
-
+################# WRITE YOUR DESCRIPTION #################################
 ```{r}
 #Batting stats
 
@@ -392,56 +390,11 @@ Graph1.1 <-
 
 
 ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+geom_bar(stat='identity',position='stack', width=.9)+ggtitle("HOF Vs Everybody Homeruns")
-  
-
-  
 
 ```
 
 
-
-(C) .Rmd Line number(s) for a spread or gather operation (or equivalent):
-
-
-(D) .Rmd Line number(s) for use of regular expressions: 
-
-
-(E) .Rmd Line number(s) for use of reduction and/or transformation functions: 
-
-
-(F) .Rmd Line number(s) for use of user-defined functions: 
-
-
-(G) .Rmd Line number(s) for use of loops and/or control flow: 
-
-
-(H) .Rmd Line number(s) for use of machine learning (not "wrangling" but scored here): 
-
-
-
-### Data Visualization (3 of 5 required)
-
-*Description: Students need not use every function and method introduced in STAT 184, but clear demonstration of proficiency should include a range of useful of data visualizations that are (1) relevant to stated research question for the analysis, (2) include at least one effective display of many--at least 3--variables, and (3) include 3 of the following 5 visualization techniques learned in STAT 184: (+) use of multiple geoms such as points, density, lines, segments, boxplots, bar charts, histograms, etc (+) use of multiple aesthetics--not necessarily all in the same graph--such as color, size, shape, x/y position, facets, etc (+) layered graphics such as points and accompanying smoother, points and accompanying boxplots, overlaid density distributions, etc (+) leaflet maps (+) decision tree and/or dendogram displaying machine learning model results*
-
-
-
-
-(A) .Rmd Line number(s) for use of mulitple different geoms:
-
-
-
-
-=======
->>>>>>> eabcccb550c9451f1e1c6844cf07da10fe8e9f03
-(B) .Rmd Line number(s) for use of multiple aesthetics:  
-
-(C) .Rmd Line number(s) for use of layered graphics:  
-
-(D) .Rmd Line number(s) for use of leaflet maps:  
-
-(E) .Rmd Line number(s) for use of decision tree or dendogram results:    
-
-
+### Data Visualization
 
 
 ### Other requirements (Nothing for you to report in this Guidance Document)

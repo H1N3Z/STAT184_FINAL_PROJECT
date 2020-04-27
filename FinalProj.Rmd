@@ -1,7 +1,7 @@
 ---
-title: "R Notebook"
+title: "Final Project"
 author: "Group 5: Matthew Hines, Emmanuel Garzo, Dustin Beaver"
-date: "4/16/2020"
+date: "4/26/2020"
 output: html_notebook
 ---
 
@@ -31,8 +31,6 @@ Salaries <- read_csv("core/Salaries.csv")
 Batting <- read_csv("core/Batting.csv")
 
 ```
-
- 
 ```{r}
 head(HallOfFame)
 ```
@@ -55,9 +53,9 @@ glimpse(Salaries)
 
 ```{r}
 head(Batting)
+head(AllstarFull)
+glimpse(AllstarFull)
 ```
-
-
 ### Data Wrangling
 
 This will filter will allow us to see the player and the year that they were inducted into the hall of fame. 
@@ -73,7 +71,7 @@ InductedP
 ```
 
 
-Using the Inducted table we created this ExperienceHP separate hall of fame player that played more than 200 games. In our analysis, we chose to say that if a player played more than 200 games, that these player we Experienced. To compare the experienced players with the other player in the hall of fame, we made the player that played less than 200 games inexperenced. 
+Using the Inducted table we created this ExperienceHP separate hall of fame player that played more than 2000 games. In our analysis, we chose to say that if a player played more than 2000 games, that these player we Experienced. To compare the experienced players with the other player in the hall of fame, we made the player that played less than 2000 games inexperenced. 
 ```{r}
 ExperiencedHP<-
   InductedP%>%
@@ -202,30 +200,6 @@ TotLeague
 
 
 
-```{r}
-
-#filtering Batting
-WL<-
-  Batting%>%
-  select(playerID, yearID)
-WL
-
-#All salaries for players in the league  
-WLeagueS<-
-  WL%>%
-  inner_join(Money, by =c("playerID" = "playerID"))
-WLeagueS
-
-#Average League salary for each player
-AvgS<-
-  WLeagueS%>%
-  group_by(playerID)
-AvgS
-
-
-```
-
-
 This join operation will join the HallOfFame table with the AllstarFull table to help us find the correlation between the players that made the Hall Of Fame and played in All Star Games. We can use this joined data set to figure out commonalities between all of the Hall Of Fame baseball players.
 ```{r}
 
@@ -299,8 +273,7 @@ HallOfFameOver500
 
 ```
 
-
-
+The graph below is the comparison between inducted Hall of Fame Players. This graph displays the amount of players that played in certain amount of All Star Games, indicated along the x-axis. This graph has a y-intercept of the average amount of appearances. This average line helps us understand how important All Star appearances were for players being inducted into Hall of Fame.
 ```{r}
 
 AllStarHallOfFameGraphData <-
@@ -388,7 +361,9 @@ Graph1.1 <-
     gather(key = kind, value = Avg, AvgHsHOF, AvgHsEvery)
 
 
-ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+geom_bar(stat='identity',position='stack', width=.9)+ggtitle("HOF Vs Everybody Homeruns")
+ggplot(data=Graph1.1,aes(x=yearID,y=Avg ,fill=kind))+
+  geom_bar(stat='identity',position='stack', width=.9)+
+  ggtitle("HOF Vs Everybody Homeruns")
 
 ```
 

@@ -58,7 +58,7 @@ glimpse(AllstarFull)
 ```
 ### Data Wrangling
 
-This will filter will allow us to see the player and the year that they were inducted into the hall of fame. 
+This filter will allow us to see the player and the year that they were inducted into the hall of fame. 
 ```{r}
 
 InductedP<-
